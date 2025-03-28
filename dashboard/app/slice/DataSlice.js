@@ -19,4 +19,7 @@ export const DataSlice = createSlice({
   },
 });
 export const { setCsvData } = DataSlice.actions;
+export const SelectData = (state) => state.dataSlice.data;
+export const SelectColcums = (state) => state.dataSlice.columns;
+
 export default DataSlice.reducer;
