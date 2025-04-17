@@ -1,13 +1,19 @@
-"use client"; // Add this at the top
+"use client";
 
 import { useState } from "react";
+// import { useSelector } from "react-redux";
+// import { selectData, selectColumns } from "@/app/slice/DataSlice";
 import {
+  ColumnFiltersState,
   flexRender,
+  SortingState,
   getCoreRowModel,
   useReactTable,
-  SortingState,
   getSortedRowModel,
+  getPaginationRowModel,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
+
 import {
   Table,
   TableBody,
@@ -16,99 +22,55 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { ArrowUpDown } from "lucide-react";
 import { useSelector } from "react-redux";
-import { SelectData } from "@/app/slice/DataSlice";
+import { selectColumns, selectData } from "@/app/slice/DataSlice";
+import { getColumnDef } from "@/app/DataTable/columns";
 
 export function DataTable() {
+  const data = useSelector(selectData);
+  const columnNames = useSelector(selectColumns);
+  const columns = getColumnDef(columnNames);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const data = useSelector(SelectData); // Fetch data from Redux
-
-  const columns = [
-    {
-      accessorKey: "Brand",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Brand
-          <ArrowUpDown className="ml-2 h-4 w-4 text-red-700" />
-        </Button>
-      ),
-      enableSorting: true,
-      sortingFn: "text",
-    },
-    {
-      accessorKey: "Price",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Price
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      enableSorting: true,
-      sortingFn: "basic",
-    },
-    {
-      accessorKey: "Size",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Size
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      enableSorting: true,
-      sortingFn: "text",
-    },
-    {
-      accessorKey: "Volume",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Volume
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      enableSorting: true,
-      sortingFn: "basic",
-    },
-  ];
-
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
+      columnFilters,
     },
   });
 
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border p-4 text-white">
+      <div className="flex justify-end py-6 ">
+        <input
+          placeholder="Filter VendorName"
+          value={
+            (table.getColumn("VendorName")?.getFilterValue() as string) ?? ""
+          }
+          onChange={(event) =>
+            table.getColumn("VendorName")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm border-1 border-white p-2"
+        />
+      </div>
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-[#ffcd00]">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                <TableHead key={header.id} className="text-black">
+                  {flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
                 </TableHead>
               ))}
             </TableRow>
@@ -117,10 +79,7 @@ export function DataTable() {
         <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
+              <TableRow key={row.id}>
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -130,7 +89,7 @@ export function DataTable() {
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell colSpan={columns.length} className="text-center h-24">
                 No results.
               </TableCell>
             </TableRow>

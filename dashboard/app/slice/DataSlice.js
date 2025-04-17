@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 const initialState = {
   data: [],
   columns: [],
@@ -18,8 +19,9 @@ export const DataSlice = createSlice({
     },
   },
 });
+
 export const { setCsvData } = DataSlice.actions;
-export const SelectData = (state) => state.dataSlice.data;
-export const SelectColcums = (state) => state.dataSlice.columns;
+export const selectData = (state) => state.dataSlice.data;
+export const selectColumns = (state) => state.dataSlice.columns;
 
 export default DataSlice.reducer;

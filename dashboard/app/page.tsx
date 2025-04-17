@@ -1,8 +1,8 @@
-import React from "react";
+"use client";
 
-import { Provider } from "react-redux";
-import { store } from "./store";
-import Home from "./pages/Home";
+import React from "react";
+import Home from "./Home/page";
+
 export default function App() {
   return (
     <div>

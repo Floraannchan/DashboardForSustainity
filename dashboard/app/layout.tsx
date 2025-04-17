@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SlideBar from "@/components/ui/SlideBar";
-import { Provider } from "react-redux";
-import { store } from "./store";
+import Providers from "./Provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,19 +21,20 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`flex ${geistSans.variable} ${geistMono.variable} antialiased `}
-      >
-        <SlideBar />
-        <Provider store={store}>
+    <Providers>
+      <html lang="en">
+        <body
+          className={`flex ${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <SlideBar />
+
           <main className="flex-1">{children}</main>
-        </Provider>
-      </body>
-    </html>
+        </body>
+      </html>
+    </Providers>
   );
 }

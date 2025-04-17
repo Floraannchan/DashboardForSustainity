@@ -1,71 +1,45 @@
 "use client";
-import React, { useState } from "react";
 import { IoHome } from "react-icons/io5";
 import { FaChartPie } from "react-icons/fa";
-import { MdDriveFolderUpload } from "react-icons/md";
+// import { MdDriveFolderUpload } from "react-icons/md";
 import { IoSettings } from "react-icons/io5";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const SlideBar: React.FC = () => {
-  const [select, setSelect] = useState<
-    "Home" | "Chart" | "Upload" | "Settings"
-  >("Home");
+  // const [select, setSelect] = useState<"Home" | "Chart" | "Settings">("Home");
+  const pathname = usePathname();
 
   return (
     <div className="bg-[#192230] w-[100px] h-screen p-4">
       <h1 className="text-white text-lg">The Sustainity</h1>
       <div className="flex h-full flex-col items-center justify-center gap-20">
-        <Link href="/Home">
-          <div
-            onClick={() => setSelect("Home")}
-            className="flex gap-8 items-center p-4"
-          >
-            {select === "Home" ? (
-              <div className="w-[4px] h-[46px] bg-[#ffcd00]"></div>
-            ) : (
-              <div></div>
-            )}
-            <IoHome className="text-[#ffcd00] text-3xl" />
-          </div>
-        </Link>
-
-        <div
-          onClick={() => setSelect("Chart")}
+        {/* Home */}
+        <Link
+          href="http://localhost:3000"
           className="flex gap-8 items-center p-4"
         >
-          {select === "Chart" ? (
+          {pathname === "http://localhost:3000" ? (
             <div className="w-[4px] h-[46px] bg-[#ffcd00]"></div>
-          ) : (
-            <div></div>
-          )}
+          ) : null}
+          <IoHome className="text-[#ffcd00] text-3xl" />
+        </Link>
+
+        {/* Chart */}
+        <Link href="/Chart" className="flex gap-8 items-center p-4">
+          {pathname === "/Chart" ? (
+            <div className="w-[4px] h-[46px] bg-[#ffcd00]"></div>
+          ) : null}
           <FaChartPie className="text-[#ffcd00] text-3xl" />
-        </div>
-        <Link href="/DataTable">
-          {" "}
-          <div
-            onClick={() => setSelect("Upload")}
-            className="flex gap-8 items-center p-4"
-          >
-            {select === "Upload" ? (
-              <div className="w-[4px] h-[46px] bg-[#ffcd00]"></div>
-            ) : (
-              <div></div>
-            )}
-            <MdDriveFolderUpload className="text-[#ffcd00] text-3xl" />
-          </div>
         </Link>
 
-        <div
-          onClick={() => setSelect("Settings")}
-          className="flex gap-8 items-center p-4"
-        >
-          {select === "Settings" ? (
+        {/* Setting */}
+        <Link href="/Setting" className="flex gap-8 items-center p-4">
+          {pathname === "/Setting" ? (
             <div className="w-[4px] h-[46px] bg-[#ffcd00]"></div>
-          ) : (
-            <div></div>
-          )}
+          ) : null}
           <IoSettings className="text-[#ffcd00] text-3xl" />
-        </div>
+        </Link>
       </div>
     </div>
   );
